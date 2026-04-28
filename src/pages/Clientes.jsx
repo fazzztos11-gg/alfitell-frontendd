@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import API from '../services/api'
+import Navbar from '../components/Navbar'
 
 function Clientes() {
   const [clientes, setClientes] = useState([])
@@ -46,12 +47,7 @@ function Clientes() {
 
   return (
     <div style={estilos.contenedor}>
-      <div style={estilos.navbar}>
-        <h2 style={estilos.navTitulo}>ALFITELL</h2>
-        <button style={estilos.btnCerrar} onClick={() => window.location.href = '/inventario'}>
-          Ir a Inventario
-        </button>
-      </div>
+      <Navbar />
 
       <div style={estilos.contenido}>
         <h3>Clientes</h3>

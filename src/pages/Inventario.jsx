@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import API from '../services/api'
+import Navbar from '../components/Navbar'
 
 function Inventario() {
   const [equipos, setEquipos] = useState([])
@@ -38,21 +39,9 @@ function Inventario() {
     }
   }
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('usuario')
-    window.location.href = '/'
-  }
-
-  return (
+return (
     <div style={estilos.contenedor}>
-      <div style={estilos.navbar}>
-        <h2 style={estilos.navTitulo}>ALFITELL</h2>
-        <button style={estilos.btnCerrar} onClick={cerrarSesion}>
-          Cerrar sesión
-        </button>
-      </div>
-
+      <Navbar />
       <div style={estilos.contenido}>
         <h3>Inventario de equipos</h3>
 
