@@ -9,6 +9,7 @@ function Clientes() {
   const [direccion, setDireccion] = useState('')
   const [busqueda, setBusqueda] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [mostrarFormulario, setMostrarFormulario] = useState(false)
 
   useEffect(() => {
     cargarClientes()
@@ -30,7 +31,9 @@ function Clientes() {
       setNombre('')
       setTelefono('')
       setDireccion('')
+      setMostrarFormulario(false)
       cargarClientes()
+      setTimeout(() => setMensaje(''), 3000)
     } catch (error) {
       setMensaje('Error al agregar cliente')
     }
@@ -46,138 +49,183 @@ function Clientes() {
   }
 
   return (
-    <div style={estilos.contenedor}>
+    <div style={{ display: 'flex' }}>
       <Navbar />
+      <div id="contenido-principal" style={{
+        marginLeft: '240px',
+        flex: 1,
+        minHeight: '100vh',
+        backgroundColor: '#f4f6fb',
+        padding: '30px',
+        transition: 'margin-left 0.3s ease'
+      }}>
+        {/* Header */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ color: '#1B2F6E', fontWeight: 'bold', fontSize: '24px', margin: 0 }}>
+            Clientes
+          </h2>
+          <p style={{ color: '#6b7280', margin: '4px 0 0 0', fontSize: '14px' }}>
+            Registro y gestión de clientes
+          </p>
+        </div>
 
-      <div style={estilos.contenido}>
-        <h3>Clientes</h3>
+        {/* Tarjeta resumen */}
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
+          <div style={{
+            backgroundColor: 'white', borderRadius: '12px', padding: '20px',
+            flex: 1, minWidth: '150px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+            borderLeft: '4px solid #1B2F6E'
+          }}>
+            <p style={{ color: '#6b7280', fontSize: '13px', margin: '0 0 4px 0' }}>Total clientes</p>
+            <p style={{ color: '#1B2F6E', fontSize: '28px', fontWeight: 'bold', margin: 0 }}>{clientes.length}</p>
+          </div>
+        </div>
 
-        {mensaje && <p style={estilos.mensaje}>{mensaje}</p>}
+        {/* Mensaje */}
+        {mensaje && (
+          <div style={{
+            backgroundColor: mensaje.includes('Error') ? '#fee2e2' : '#dcfce7',
+            color: mensaje.includes('Error') ? '#991b1b' : '#166534',
+            padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', fontSize: '14px'
+          }}>
+            {mensaje}
+          </div>
+        )}
 
-        <div style={estilos.formulario}>
-          <input
-            style={estilos.input}
-            placeholder="Nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-          <input
-            style={estilos.input}
-            placeholder="Teléfono"
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
-          />
-          <input
-            style={estilos.input}
-            placeholder="Dirección"
-            value={direccion}
-            onChange={(e) => setDireccion(e.target.value)}
-          />
-          <button style={estilos.boton} onClick={agregarCliente}>
-            Agregar cliente
+        {/* Barra de acciones */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <input
+              placeholder="Buscar por nombre..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              style={{
+                padding: '10px 14px', borderRadius: '8px',
+                border: '1px solid #e5e7eb', fontSize: '14px', width: '220px'
+              }}
+            />
+            <button
+              onClick={buscarCliente}
+              style={{
+                backgroundColor: '#1B2F6E', color: 'white', border: 'none',
+                padding: '10px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px'
+              }}
+            >
+              Buscar
+            </button>
+            <button
+              onClick={cargarClientes}
+              style={{
+                backgroundColor: 'white', color: '#1B2F6E', border: '1px solid #1B2F6E',
+                padding: '10px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px'
+              }}
+            >
+              Ver todos
+            </button>
+          </div>
+          <button
+            onClick={() => setMostrarFormulario(!mostrarFormulario)}
+            style={{
+              backgroundColor: '#1B2F6E', color: 'white', border: 'none',
+              padding: '10px 20px', borderRadius: '8px', cursor: 'pointer',
+              fontSize: '14px', fontWeight: '600'
+            }}
+          >
+            {mostrarFormulario ? '✕ Cancelar' : '+ Agregar cliente'}
           </button>
         </div>
 
-        <div style={estilos.busqueda}>
-          <input
-            style={estilos.input}
-            placeholder="Buscar por nombre..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-          />
-          <button style={estilos.boton} onClick={buscarCliente}>
-            Buscar
-          </button>
-          <button style={estilos.btnSecundario} onClick={cargarClientes}>
-            Ver todos
-          </button>
-        </div>
+        {/* Formulario */}
+        {mostrarFormulario && (
+          <div style={{
+            backgroundColor: 'white', borderRadius: '12px', padding: '24px',
+            marginBottom: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
+          }}>
+            <h4 style={{ color: '#1B2F6E', margin: '0 0 16px 0' }}>Nuevo cliente</h4>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <input
+                placeholder="Nombre completo"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                style={{
+                  flex: 1, minWidth: '180px', padding: '10px 14px',
+                  borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '14px'
+                }}
+              />
+              <input
+                placeholder="Teléfono"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+                style={{
+                  flex: 1, minWidth: '140px', padding: '10px 14px',
+                  borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '14px'
+                }}
+              />
+              <input
+                placeholder="Dirección"
+                value={direccion}
+                onChange={(e) => setDireccion(e.target.value)}
+                style={{
+                  flex: 2, minWidth: '200px', padding: '10px 14px',
+                  borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '14px'
+                }}
+              />
+              <button
+                onClick={agregarCliente}
+                style={{
+                  backgroundColor: '#E8320A', color: 'white', border: 'none',
+                  padding: '10px 20px', borderRadius: '8px', cursor: 'pointer',
+                  fontSize: '14px', fontWeight: '600'
+                }}
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+        )}
 
-        <table style={estilos.tabla}>
-          <thead>
-            <tr style={estilos.thead}>
-              <th style={estilos.th}>Nombre</th>
-              <th style={estilos.th}>Teléfono</th>
-              <th style={estilos.th}>Dirección</th>
-              <th style={estilos.th}>Registrado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clientes.map((cliente) => (
-              <tr key={cliente.id} style={estilos.tr}>
-                <td style={estilos.td}>{cliente.nombre}</td>
-                <td style={estilos.td}>{cliente.telefono}</td>
-                <td style={estilos.td}>{cliente.direccion}</td>
-                <td style={estilos.td}>
-                  {new Date(cliente.creado_en).toLocaleDateString()}
-                </td>
+        {/* Tabla */}
+        <div style={{
+          backgroundColor: 'white', borderRadius: '12px',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.08)', overflow: 'hidden'
+        }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#1B2F6E' }}>
+                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Nombre</th>
+                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Teléfono</th>
+                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Dirección</th>
+                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Registrado</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {clientes.map((cliente) => (
+                <tr key={cliente.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: '500' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{
+                        width: '32px', height: '32px', borderRadius: '50%',
+                        backgroundColor: '#1B2F6E', display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', color: 'white', fontSize: '12px', fontWeight: 'bold'
+                      }}>
+                        {cliente.nombre?.charAt(0)}
+                      </div>
+                      {cliente.nombre}
+                    </div>
+                  </td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: '#6b7280' }}>{cliente.telefono}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: '#6b7280' }}>{cliente.direccion}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: '#6b7280' }}>
+                    {new Date(cliente.creado_en).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
-}
-
-const estilos = {
-  contenedor: { minHeight: '100vh', backgroundColor: '#f0f2f5' },
-  navbar: {
-    backgroundColor: '#2E4057',
-    padding: '15px 30px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  navTitulo: { color: 'white', margin: 0 },
-  btnCerrar: {
-    backgroundColor: 'transparent',
-    color: 'white',
-    border: '1px solid white',
-    padding: '8px 15px',
-    borderRadius: '6px',
-    cursor: 'pointer'
-  },
-  contenido: { padding: '30px' },
-  formulario: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '20px',
-    flexWrap: 'wrap'
-  },
-  busqueda: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '20px'
-  },
-  input: {
-    padding: '10px',
-    borderRadius: '6px',
-    border: '1px solid #ddd',
-    fontSize: '14px'
-  },
-  boton: {
-    padding: '10px 20px',
-    backgroundColor: '#2E4057',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer'
-  },
-  btnSecundario: {
-    padding: '10px 20px',
-    backgroundColor: '#048A81',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer'
-  },
-  mensaje: { color: 'green', fontWeight: 'bold' },
-  tabla: { width: '100%', borderCollapse: 'collapse', backgroundColor: 'white', borderRadius: '10px' },
-  thead: { backgroundColor: '#2E4057' },
-  th: { color: 'white', padding: '12px', textAlign: 'left' },
-  tr: { borderBottom: '1px solid #eee' },
-  td: { padding: '12px' }
 }
 
 export default Clientes
