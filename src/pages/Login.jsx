@@ -13,8 +13,8 @@ function Login() {
       const respuesta = await API.post('/auth/login', { email, password })
       localStorage.setItem('token', respuesta.data.token)
       localStorage.setItem('usuario', JSON.stringify(respuesta.data.usuario))
-      window.location.href = '/inventario'
-    } catch (err) {
+      localStorage.setItem('permisos', JSON.stringify(respuesta.data.permisos))
+      window.location.href = '/inventario'    } catch (err) {
       setError('Email o contraseña incorrectos')
       setCargando(false)
     }

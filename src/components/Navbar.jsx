@@ -21,29 +21,35 @@ function Sidebar() {
     window.location.href = '/'
   }
 
+  const permisos = JSON.parse(localStorage.getItem('permisos') || '{}')
+
   const enlaces = [
     {
       label: 'Inventario',
       icono: '📦',
-      rol: ['admin', 'tecnico'],
+      rol: ['admin'],
+      permiso: 'ver_inventario',
       ruta: '/inventario'
     },
     {
       label: 'Clientes',
       icono: '👥',
-      rol: ['admin', 'tecnico'],
+      rol: ['admin'],
+      permiso: 'ver_clientes',
       ruta: '/clientes'
     },
     {
       label: 'Instalaciones',
       icono: '🔧',
-      rol: ['admin', 'tecnico'],
+      rol: ['admin'],
+      permiso: 'registrar_instalaciones',
       ruta: '/instalaciones'
     },
     {
       label: 'Finanzas',
       icono: '💰',
       rol: ['admin'],
+      permiso: 'ver_gastos',
       submenu: [
         { label: 'Gastos', ruta: '/gastos' },
         { label: 'Pagos', ruta: '/gastos' },
@@ -53,7 +59,14 @@ function Sidebar() {
       label: 'Reportes',
       icono: '📊',
       rol: ['admin'],
+      permiso: 'ver_reportes',
       ruta: '/reportes'
+    },
+    {
+      label: 'Usuarios',
+      icono: '👤',
+      rol: ['admin'],
+      ruta: '/usuarios'
     },
   ]
 
@@ -132,9 +145,16 @@ function Sidebar() {
       )}
 
       {/* Enlaces */}
+      
       <div style={{ flex: 1, padding: '12px 8px', overflowY: 'auto' }}>
         {enlaces
-          .filter(e => e.rol.includes(usuario?.rol))
+          .filter(e => {
+            if (usuario?.rol === 'admin') return true
+            if (e.rol?.includes('admin') && usuario?.rol !== 'admin') {
+              return e.permiso && permisos[e.permiso] === true
+            }
+            return false
+          })
           .map((e, i) => (
             <div key={i}>
               {e.submenu ? (

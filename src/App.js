@@ -6,6 +6,7 @@ import Clientes from './pages/Clientes'
 import Instalaciones from './pages/Instalaciones'
 import Gastos from './pages/Gastos'
 import Reportes from './pages/Reportes'
+import Usuarios from './pages/Usuarios'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/instalaciones" element={<Instalaciones />} />
         <Route path="/gastos" element={<Gastos />} />
         <Route path="/reportes" element={<Reportes />} />
+        <Route path="/usuarios" element={<Usuarios />} />
       </Routes>
     </BrowserRouter>
   )
