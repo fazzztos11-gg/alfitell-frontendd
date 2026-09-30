@@ -1,3 +1,113 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Importar Inter */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Design Tokens - Modo Claro */
+:root {
+    /* Colores principales */
+    --color-primario: #1B2F6E;
+    --color-acento: #E8320A;
+    --color-acento-hover: #c42a08;
+
+    /* Fondos */
+    --bg-principal: #f4f6fb;
+    --bg-card: #ffffff;
+    --bg-sidebar: #1B2F6E;
+    --bg-input: #f9fafb;
+    --bg-hover: #f3f4f6;
+
+    /* Textos */
+    --texto-primario: #0f172a;
+    --texto-secundario: #64748b;
+    --texto-terciario: #94a3b8;
+    --texto-sidebar: #ffffff;
+
+    /* Bordes */
+    --borde: #e2e8f0;
+    --borde-focus: #1B2F6E;
+
+    /* Sombras */
+    --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --sombra-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --sombra-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+
+    /* Radios */
+    --radio-sm: 8px;
+    --radio-md: 12px;
+    --radio-lg: 16px;
+    --radio-xl: 24px;
+
+    /* Espaciados */
+    --espacio-sm: 8px;
+    --espacio-md: 16px;
+    --espacio-lg: 24px;
+    --espacio-xl: 32px;
+
+    /* Estados */
+    --color-exito: #16a34a;
+    --color-exito-bg: #dcfce7;
+    --color-error: #dc2626;
+    --color-error-bg: #fee2e2;
+    --color-warning: #d97706;
+    --color-warning-bg: #fef3c7;
+
+    /* Transición global */
+    --transicion: all 0.2s ease;
+}
+
+/* Design Tokens - Modo Oscuro */
+[data-theme="dark"] {
+    --bg-principal: #0f172a;
+    --bg-card: #1e293b;
+    --bg-sidebar: #0f172a;
+    --bg-input: #273548;
+    --bg-hover: #2d3f55;
+
+    --texto-primario: #f1f5f9;
+    --texto-secundario: #94a3b8;
+    --texto-terciario: #64748b;
+
+    --borde: #2d3f55;
+    --borde-focus: #4d7cff;
+
+    --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --sombra-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --sombra-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+    --color-exito-bg: #052e16;
+    --color-error-bg: #450a0a;
+    --color-warning-bg: #431407;
+}
+
+body {
+    background-color: var(--bg-principal);
+    color: var(--texto-primario);
+    transition: var(--transicion);
+}
+
+/* Clases responsivas para login */
+@media (max-width: 768px) {
+    .panel-derecho {
+        display: none !important;
+    }
+
+    .contenedor-login {
+        flex-direction: column !important;
+        max-width: 100% !important;
+        min-height: 100vh !important;
+        border-radius: 0 !important;
+    }
+
+    .panel-izquierdo {
+        flex: 1 !important;
+        padding: 40px 30px !important;
+    }
+}

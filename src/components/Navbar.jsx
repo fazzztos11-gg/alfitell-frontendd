@@ -1,10 +1,19 @@
 import React, { useState } from 'react'
+import { useDarkMode } from '../hooks/useDarkMode'
 
 function Sidebar() {
   const usuario = JSON.parse(localStorage.getItem('usuario'))
   const rutaActual = window.location.pathname
   const [collapsed, setCollapsed] = useState(false)
   const [submenuAbierto, setSubmenuAbierto] = useState('')
+  const [darkMode, setDarkMode] = useDarkMode()
+
+  const cerrarSesion = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('usuario')
+    localStorage.removeItem('permisos')
+    window.location.href = '/'
+  }
 
   const toggleCollapse = () => {
     const nuevoEstado = !collapsed
@@ -15,101 +24,53 @@ function Sidebar() {
     }
   }
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('usuario')
-    window.location.href = '/'
-  }
-
   const permisos = JSON.parse(localStorage.getItem('permisos') || '{}')
 
   const enlaces = [
+    { label: 'Inventario', icono: '📦', rol: ['admin'], permiso: 'ver_inventario', ruta: '/inventario' },
+    { label: 'Clientes', icono: '👥', rol: ['admin'], permiso: 'ver_clientes', ruta: '/clientes' },
+    { label: 'Instalaciones', icono: '🔧', rol: ['admin'], permiso: 'registrar_instalaciones', ruta: '/instalaciones' },
     {
-      label: 'Inventario',
-      icono: '📦',
-      rol: ['admin'],
-      permiso: 'ver_inventario',
-      ruta: '/inventario'
-    },
-    {
-      label: 'Clientes',
-      icono: '👥',
-      rol: ['admin'],
-      permiso: 'ver_clientes',
-      ruta: '/clientes'
-    },
-    {
-      label: 'Instalaciones',
-      icono: '🔧',
-      rol: ['admin'],
-      permiso: 'registrar_instalaciones',
-      ruta: '/instalaciones'
-    },
-    {
-      label: 'Finanzas',
-      icono: '💰',
-      rol: ['admin'],
-      permiso: 'ver_gastos',
+      label: 'Finanzas', icono: '💰', rol: ['admin'], permiso: 'ver_gastos',
       submenu: [
         { label: 'Gastos', ruta: '/gastos' },
         { label: 'Pagos', ruta: '/gastos' },
       ]
     },
-    {
-      label: 'Reportes',
-      icono: '📊',
-      rol: ['admin'],
-      permiso: 'ver_reportes',
-      ruta: '/reportes'
-    },
-    {
-      label: 'Usuarios',
-      icono: '👤',
-      rol: ['admin'],
-      ruta: '/usuarios'
-    },
+    { label: 'Reportes', icono: '📊', rol: ['admin'], permiso: 'ver_reportes', ruta: '/reportes' },
+    { label: 'Usuarios', icono: '👤', rol: ['admin'], ruta: '/usuarios' },
   ]
 
   return (
     <div style={{
       width: collapsed ? '70px' : '240px',
       minHeight: '100vh',
-      backgroundColor: '#1B2F6E',
+      backgroundColor: 'var(--bg-sidebar)',
       display: 'flex',
       flexDirection: 'column',
       transition: 'width 0.3s ease',
       position: 'fixed',
-      top: 0,
-      left: 0,
-      zIndex: 100,
-      overflowX: 'hidden'
+      top: 0, left: 0, zIndex: 100,
+      overflowX: 'hidden',
+      borderRight: '1px solid rgba(255,255,255,0.08)'
     }}>
 
-      {/* Header sidebar */}
+      {/* Header */}
       <div style={{
         padding: '20px 16px',
         borderBottom: '1px solid rgba(255,255,255,0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
       }}>
         {!collapsed && (
           <div>
-            <p style={{ color: 'white', fontWeight: 'bold', fontSize: '18px', margin: 0 }}>ALFITELL</p>
-            <div style={{ height: '2px', backgroundColor: '#E8320A', borderRadius: '2px', marginTop: '4px' }}></div>
+            <p style={{ color: 'white', fontWeight: '700', fontSize: '18px', margin: 0, letterSpacing: '1px' }}>ALFITELL</p>
+            <div style={{ height: '2px', backgroundColor: 'var(--color-acento)', borderRadius: '2px', marginTop: '4px' }}></div>
           </div>
         )}
-        <button
-          onClick={toggleCollapse}
-          style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: 'white',
-            cursor: 'pointer',
-            fontSize: '18px',
-            padding: '4px'
-          }}
-        >
+        <button onClick={toggleCollapse} style={{
+          backgroundColor: 'transparent', border: 'none',
+          color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '18px', padding: '4px'
+        }}>
           {collapsed ? '→' : '←'}
         </button>
       </div>
@@ -119,33 +80,24 @@ function Sidebar() {
         <div style={{
           padding: '16px',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px'
+          display: 'flex', alignItems: 'center', gap: '10px'
         }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            backgroundColor: '#E8320A',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 'bold',
-            flexShrink: 0
+            width: '36px', height: '36px', borderRadius: '50%',
+            backgroundColor: 'var(--color-acento)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white', fontWeight: 'bold', flexShrink: 0
           }}>
             {usuario?.nombre?.charAt(0)}
           </div>
           <div>
             <p style={{ color: 'white', fontSize: '13px', fontWeight: '600', margin: 0 }}>{usuario?.nombre}</p>
-            <p style={{ color: '#93c5fd', fontSize: '11px', margin: 0, textTransform: 'capitalize' }}>{usuario?.rol}</p>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', margin: 0, textTransform: 'capitalize' }}>{usuario?.rol}</p>
           </div>
         </div>
       )}
 
       {/* Enlaces */}
-      
       <div style={{ flex: 1, padding: '12px 8px', overflowY: 'auto' }}>
         {enlaces
           .filter(e => {
@@ -162,44 +114,29 @@ function Sidebar() {
                   <button
                     onClick={() => setSubmenuAbierto(submenuAbierto === e.label ? '' : e.label)}
                     style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      color: 'white',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      marginBottom: '2px'
+                      width: '100%', display: 'flex', alignItems: 'center',
+                      justifyContent: 'space-between', padding: '10px 12px',
+                      borderRadius: 'var(--radio-sm)', border: 'none',
+                      backgroundColor: 'transparent', color: 'rgba(255,255,255,0.8)',
+                      cursor: 'pointer', fontSize: '14px', marginBottom: '2px'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <span>{e.icono}</span>
                       {!collapsed && <span>{e.label}</span>}
                     </div>
-                    {!collapsed && <span>{submenuAbierto === e.label ? '▾' : '▸'}</span>}
+                    {!collapsed && <span style={{ fontSize: '12px' }}>{submenuAbierto === e.label ? '▾' : '▸'}</span>}
                   </button>
-
                   {submenuAbierto === e.label && !collapsed && (
                     <div style={{ paddingLeft: '16px', marginBottom: '4px' }}>
                       {e.submenu.map((sub, j) => (
-                        
-                          <a key={j}
-                          href={sub.ruta}
-                          style={{
-                            display: 'block',
-                            padding: '8px 12px',
-                            borderRadius: '8px',
-                            color: rutaActual === sub.ruta ? 'white' : '#93c5fd',
-                            backgroundColor: rutaActual === sub.ruta ? '#E8320A' : 'transparent',
-                            textDecoration: 'none',
-                            fontSize: '13px',
-                            marginBottom: '2px'
-                          }}
-                        >
+                        <a key={j} href={sub.ruta} style={{
+                          display: 'block', padding: '8px 12px',
+                          borderRadius: 'var(--radio-sm)',
+                          color: rutaActual === sub.ruta ? 'white' : 'rgba(255,255,255,0.6)',
+                          backgroundColor: rutaActual === sub.ruta ? 'var(--color-acento)' : 'transparent',
+                          textDecoration: 'none', fontSize: '13px', marginBottom: '2px'
+                        }}>
                           • {sub.label}
                         </a>
                       ))}
@@ -207,21 +144,14 @@ function Sidebar() {
                   )}
                 </>
               ) : (
-                
-                  <a href={e.ruta}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '10px 12px',
-                    borderRadius: '8px',
-                    color: 'white',
-                    backgroundColor: rutaActual === e.ruta ? '#E8320A' : 'transparent',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    marginBottom: '2px'
-                  }}
-                >
+                <a href={e.ruta} style={{
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  padding: '10px 12px', borderRadius: 'var(--radio-sm)',
+                  color: rutaActual === e.ruta ? 'white' : 'rgba(255,255,255,0.7)',
+                  backgroundColor: rutaActual === e.ruta ? 'var(--color-acento)' : 'transparent',
+                  textDecoration: 'none', fontSize: '14px', marginBottom: '2px',
+                  transition: 'var(--transicion)'
+                }}>
                   <span>{e.icono}</span>
                   {!collapsed && <span>{e.label}</span>}
                 </a>
@@ -230,24 +160,24 @@ function Sidebar() {
           ))}
       </div>
 
-      {/* Cerrar sesión */}
+      {/* Modo oscuro y cerrar sesión */}
       <div style={{ padding: '12px 8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <button
-          onClick={cerrarSesion}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            padding: '10px 12px',
-            borderRadius: '8px',
-            border: 'none',
-            backgroundColor: 'transparent',
-            color: '#f87171',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}
-        >
+        <button onClick={() => setDarkMode(!darkMode)} style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 12px', borderRadius: 'var(--radio-sm)', border: 'none',
+          backgroundColor: 'transparent', color: 'rgba(255,255,255,0.7)',
+          cursor: 'pointer', fontSize: '14px', marginBottom: '4px'
+        }}>
+          <span>{darkMode ? '☀️' : '🌙'}</span>
+          {!collapsed && <span>{darkMode ? 'Modo claro' : 'Modo oscuro'}</span>}
+        </button>
+
+        <button onClick={cerrarSesion} style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 12px', borderRadius: 'var(--radio-sm)', border: 'none',
+          backgroundColor: 'transparent', color: '#f87171',
+          cursor: 'pointer', fontSize: '14px'
+        }}>
           <span>🚪</span>
           {!collapsed && <span>Cerrar sesión</span>}
         </button>

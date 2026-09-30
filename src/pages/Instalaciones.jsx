@@ -26,9 +26,7 @@ function Instalaciones() {
                     target: scannerRef.current,
                     constraints: { facingMode: 'environment' }
                 },
-                decoder: {
-                    readers: ['code_128_reader', 'ean_reader', 'code_39_reader']
-                }
+                decoder: { readers: ['code_128_reader', 'ean_reader', 'code_39_reader'] }
             }, (err) => {
                 if (err) { console.error(err); return }
                 Quagga.start()
@@ -42,10 +40,7 @@ function Instalaciones() {
                 setEscaneando(false)
             })
         }
-
-        return () => {
-            if (escaneando) Quagga.stop()
-        }
+        return () => { if (escaneando) Quagga.stop() }
     }, [escaneando])
 
     const cargarInstalaciones = async () => {
@@ -62,8 +57,7 @@ function Instalaciones() {
             await API.post('/instalaciones', {
                 numero_serie: numeroSerie,
                 nombre_cliente: nombreCliente,
-                telefono,
-                direccion
+                telefono, direccion
             })
             setMensaje('Instalación registrada correctamente')
             setNumeroSerie('')
@@ -78,55 +72,51 @@ function Instalaciones() {
         }
     }
 
+    const totalIngresos = instalaciones.reduce((acc, i) => acc + parseFloat(i.ingreso_generado || 0), 0)
+
     return (
         <div style={{ display: 'flex' }}>
             <Navbar />
             <div id="contenido-principal" style={{
-                marginLeft: '240px',
-                flex: 1,
-                minHeight: '100vh',
-                backgroundColor: '#f4f6fb',
-                padding: '30px',
-                transition: 'margin-left 0.3s ease'
+                marginLeft: '240px', flex: 1, minHeight: '100vh',
+                backgroundColor: 'var(--bg-principal)',
+                padding: '30px', transition: 'margin-left 0.3s ease'
             }}>
                 {/* Header */}
                 <div style={{ marginBottom: '24px' }}>
-                    <h2 style={{ color: '#1B2F6E', fontWeight: 'bold', fontSize: '24px', margin: 0 }}>
+                    <h2 style={{ color: 'var(--texto-primario)', fontWeight: '700', fontSize: '24px', margin: 0 }}>
                         Instalaciones
                     </h2>
-                    <p style={{ color: '#6b7280', margin: '4px 0 0 0', fontSize: '14px' }}>
+                    <p style={{ color: 'var(--texto-secundario)', margin: '4px 0 0 0', fontSize: '14px' }}>
                         Registro de instalaciones realizadas por técnicos
                     </p>
                 </div>
 
-                {/* Tarjeta resumen */}
+                {/* Tarjetas resumen */}
                 <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                    <div style={{
-                        backgroundColor: 'white', borderRadius: '12px', padding: '20px',
-                        flex: 1, minWidth: '150px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-                        borderLeft: '4px solid #1B2F6E'
-                    }}>
-                        <p style={{ color: '#6b7280', fontSize: '13px', margin: '0 0 4px 0' }}>Total instalaciones</p>
-                        <p style={{ color: '#1B2F6E', fontSize: '28px', fontWeight: 'bold', margin: 0 }}>{instalaciones.length}</p>
-                    </div>
-                    <div style={{
-                        backgroundColor: 'white', borderRadius: '12px', padding: '20px',
-                        flex: 1, minWidth: '150px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-                        borderLeft: '4px solid #16a34a'
-                    }}>
-                        <p style={{ color: '#6b7280', fontSize: '13px', margin: '0 0 4px 0' }}>Ingresos generados</p>
-                        <p style={{ color: '#16a34a', fontSize: '28px', fontWeight: 'bold', margin: 0 }}>
-                            S/ {instalaciones.reduce((acc, i) => acc + parseFloat(i.ingreso_generado || 0), 0).toFixed(2)}
-                        </p>
-                    </div>
+                    {[
+                        { label: 'Total instalaciones', valor: instalaciones.length, color: 'var(--color-primario)' },
+                        { label: 'Ingresos generados', valor: `S/ ${totalIngresos.toFixed(2)}`, color: 'var(--color-exito)' },
+                    ].map((t, i) => (
+                        <div key={i} style={{
+                            backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radio-lg)',
+                            padding: '20px', flex: 1, minWidth: '150px',
+                            boxShadow: 'var(--sombra-md)', borderLeft: `4px solid ${t.color}`,
+                            border: '1px solid var(--borde)'
+                        }}>
+                            <p style={{ color: 'var(--texto-secundario)', fontSize: '13px', margin: '0 0 4px 0' }}>{t.label}</p>
+                            <p style={{ color: t.color, fontSize: '28px', fontWeight: '700', margin: 0 }}>{t.valor}</p>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Mensaje */}
                 {mensaje && (
                     <div style={{
-                        backgroundColor: mensaje.includes('Error') ? '#fee2e2' : '#dcfce7',
-                        color: mensaje.includes('Error') ? '#991b1b' : '#166534',
-                        padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', fontSize: '14px'
+                        backgroundColor: mensaje.includes('Error') ? 'var(--color-error-bg)' : 'var(--color-exito-bg)',
+                        color: mensaje.includes('Error') ? 'var(--color-error)' : 'var(--color-exito)',
+                        padding: '12px 16px', borderRadius: 'var(--radio-md)',
+                        marginBottom: '16px', fontSize: '14px'
                     }}>
                         {mensaje}
                     </div>
@@ -137,9 +127,9 @@ function Instalaciones() {
                     <button
                         onClick={() => setMostrarFormulario(!mostrarFormulario)}
                         style={{
-                            backgroundColor: '#1B2F6E', color: 'white', border: 'none',
-                            padding: '10px 20px', borderRadius: '8px', cursor: 'pointer',
-                            fontSize: '14px', fontWeight: '600'
+                            backgroundColor: 'var(--color-primario)', color: 'white',
+                            border: 'none', padding: '10px 20px', borderRadius: 'var(--radio-md)',
+                            cursor: 'pointer', fontSize: '14px', fontWeight: '600'
                         }}
                     >
                         {mostrarFormulario ? '✕ Cancelar' : '+ Registrar instalación'}
@@ -149,10 +139,11 @@ function Instalaciones() {
                 {/* Formulario */}
                 {mostrarFormulario && (
                     <div style={{
-                        backgroundColor: 'white', borderRadius: '12px', padding: '24px',
-                        marginBottom: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
+                        backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radio-lg)',
+                        padding: '24px', marginBottom: '20px', boxShadow: 'var(--sombra-md)',
+                        border: '1px solid var(--borde)'
                     }}>
-                        <h4 style={{ color: '#1B2F6E', margin: '0 0 16px 0' }}>Nueva instalación</h4>
+                        <h4 style={{ color: 'var(--texto-primario)', margin: '0 0 16px 0' }}>Nueva instalación</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '500px' }}>
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <input
@@ -160,16 +151,17 @@ function Instalaciones() {
                                     value={numeroSerie}
                                     onChange={(e) => setNumeroSerie(e.target.value)}
                                     style={{
-                                        flex: 1, padding: '10px 14px',
-                                        borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '14px'
+                                        flex: 1, padding: '10px 14px', borderRadius: 'var(--radio-md)',
+                                        border: '1px solid var(--borde)', backgroundColor: 'var(--bg-input)',
+                                        color: 'var(--texto-primario)', fontSize: '14px', outline: 'none'
                                     }}
                                 />
                                 <button
                                     onClick={() => setEscaneando(!escaneando)}
                                     style={{
-                                        backgroundColor: '#E8320A', color: 'white', border: 'none',
-                                        padding: '10px 16px', borderRadius: '8px', cursor: 'pointer',
-                                        fontSize: '13px', whiteSpace: 'nowrap'
+                                        backgroundColor: 'var(--color-acento)', color: 'white',
+                                        border: 'none', padding: '10px 16px', borderRadius: 'var(--radio-md)',
+                                        cursor: 'pointer', fontSize: '13px', whiteSpace: 'nowrap'
                                     }}
                                 >
                                     {escaneando ? 'Cancelar' : '📷 Escanear'}
@@ -177,49 +169,37 @@ function Instalaciones() {
                             </div>
 
                             {escaneando && (
-                                <div style={{ border: '2px solid #E8320A', borderRadius: '10px', overflow: 'hidden' }}>
+                                <div style={{ border: '2px solid var(--color-acento)', borderRadius: 'var(--radio-md)', overflow: 'hidden' }}>
                                     <div ref={scannerRef} style={{ width: '100%', height: '200px' }} />
-                                    <p style={{ textAlign: 'center', color: '#E8320A', margin: '8px 0', fontSize: '13px' }}>
+                                    <p style={{ textAlign: 'center', color: 'var(--color-acento)', margin: '8px 0', fontSize: '13px' }}>
                                         Apunta la cámara al código de barras
                                     </p>
                                 </div>
                             )}
 
-                            <input
-                                placeholder="Nombre del cliente"
-                                value={nombreCliente}
-                                onChange={(e) => setNombreCliente(e.target.value)}
-                                style={{
-                                    padding: '10px 14px', borderRadius: '8px',
-                                    border: '1px solid #e5e7eb', fontSize: '14px'
-                                }}
-                            />
-                            <input
-                                placeholder="Teléfono"
-                                value={telefono}
-                                onChange={(e) => setTelefono(e.target.value)}
-                                style={{
-                                    padding: '10px 14px', borderRadius: '8px',
-                                    border: '1px solid #e5e7eb', fontSize: '14px'
-                                }}
-                            />
-                            <input
-                                placeholder="Dirección"
-                                value={direccion}
-                                onChange={(e) => setDireccion(e.target.value)}
-                                style={{
-                                    padding: '10px 14px', borderRadius: '8px',
-                                    border: '1px solid #e5e7eb', fontSize: '14px'
-                                }}
-                            />
-                            <button
-                                onClick={registrarInstalacion}
-                                style={{
-                                    backgroundColor: '#1B2F6E', color: 'white', border: 'none',
-                                    padding: '12px', borderRadius: '8px', cursor: 'pointer',
-                                    fontSize: '14px', fontWeight: '600'
-                                }}
-                            >
+                            {[
+                                { placeholder: 'Nombre del cliente', value: nombreCliente, onChange: setNombreCliente },
+                                { placeholder: 'Teléfono', value: telefono, onChange: setTelefono },
+                                { placeholder: 'Dirección', value: direccion, onChange: setDireccion },
+                            ].map((input, i) => (
+                                <input
+                                    key={i}
+                                    placeholder={input.placeholder}
+                                    value={input.value}
+                                    onChange={(e) => input.onChange(e.target.value)}
+                                    style={{
+                                        padding: '10px 14px', borderRadius: 'var(--radio-md)',
+                                        border: '1px solid var(--borde)', backgroundColor: 'var(--bg-input)',
+                                        color: 'var(--texto-primario)', fontSize: '14px', outline: 'none'
+                                    }}
+                                />
+                            ))}
+
+                            <button onClick={registrarInstalacion} style={{
+                                backgroundColor: 'var(--color-primario)', color: 'white',
+                                border: 'none', padding: '12px', borderRadius: 'var(--radio-md)',
+                                cursor: 'pointer', fontSize: '14px', fontWeight: '600'
+                            }}>
                                 Registrar instalación
                             </button>
                         </div>
@@ -228,32 +208,30 @@ function Instalaciones() {
 
                 {/* Tabla */}
                 <div style={{
-                    backgroundColor: 'white', borderRadius: '12px',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.08)', overflow: 'hidden'
+                    backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radio-lg)',
+                    boxShadow: 'var(--sombra-md)', overflow: 'hidden',
+                    border: '1px solid var(--borde)'
                 }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
-                            <tr style={{ backgroundColor: '#1B2F6E' }}>
-                                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Fecha</th>
-                                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Serie</th>
-                                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Modelo</th>
-                                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Cliente</th>
-                                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Técnico</th>
-                                <th style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px' }}>Ingreso</th>
+                            <tr style={{ backgroundColor: 'var(--color-primario)' }}>
+                                {['Fecha', 'Serie', 'Modelo', 'Cliente', 'Técnico', 'Ingreso'].map((h, i) => (
+                                    <th key={i} style={{ color: 'white', padding: '14px 16px', textAlign: 'left', fontSize: '13px', fontWeight: '600' }}>{h}</th>
+                                ))}
                             </tr>
                         </thead>
                         <tbody>
-                            {instalaciones.map((i) => (
-                                <tr key={i.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: '#6b7280' }}>
-                                        {new Date(i.fecha).toLocaleDateString()}
+                            {instalaciones.map((inst) => (
+                                <tr key={inst.id} style={{ borderBottom: '1px solid var(--borde)' }}>
+                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--texto-secundario)' }}>
+                                        {new Date(inst.fecha).toLocaleDateString()}
                                     </td>
-                                    <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: '500' }}>{i.numero_serie}</td>
-                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: '#6b7280' }}>{i.modelo}</td>
-                                    <td style={{ padding: '14px 16px', fontSize: '14px' }}>{i.cliente}</td>
-                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: '#6b7280' }}>{i.tecnico}</td>
-                                    <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: '600', color: '#16a34a' }}>
-                                        S/ {i.ingreso_generado}
+                                    <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: '500', color: 'var(--texto-primario)' }}>{inst.numero_serie}</td>
+                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--texto-secundario)' }}>{inst.modelo}</td>
+                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--texto-primario)' }}>{inst.cliente}</td>
+                                    <td style={{ padding: '14px 16px', fontSize: '14px', color: 'var(--texto-secundario)' }}>{inst.tecnico}</td>
+                                    <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: '600', color: 'var(--color-exito)' }}>
+                                        S/ {inst.ingreso_generado}
                                     </td>
                                 </tr>
                             ))}
